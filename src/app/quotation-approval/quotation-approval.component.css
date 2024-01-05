@@ -1,0 +1,54 @@
+.left-div{
+    border: 1px solid gray;
+    padding: 2px 15px;
+}
+.po-details-row{
+    background: #fc616f;
+    color: white;
+    margin: 3px 0px;
+}
+.po-active{
+    background-color: #fc616f;
+    color: white;
+}
+.btn-row{
+    border: 1px solid gray;
+    padding: 2px;
+    border-radius: 20px;
+}
+.mr-t-b-10{
+    margin: 10px 0px;
+}
+.form-control:disabled,.btn-success:disabled{
+    cursor: not-allowed ;
+}
+.po-div{
+    max-height: 545px;
+    overflow-x: hidden
+}
+.po-div1{
+    max-height: 416px;
+    overflow-x: hidden
+}
+.div-hr{
+    border: 1px solid gray;
+}
+.hsil-txt, .brand-table td:first-child{
+    color: #fc616f;
+}
+.input-sm{
+    height: 25px;
+}
+img {
+    border: 1px solid #ddd; /* Gray border */
+    border-radius: 4px;  /* Rounded border */
+    padding: 5px; /* Some padding */
+    width: 150px; /* Set a small width */
+    height: 150px;
+  }
+  
+  /* Add a hover effect (blue shadow) */
+img:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    cursor: pointer;
+}

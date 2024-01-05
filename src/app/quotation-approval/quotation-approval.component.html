@@ -1,0 +1,582 @@
+<div class="container">
+    <div class="row" *ngIf="pendingFor != '' ">
+        <div class="col-sm-12">
+            {{pendingFor}}
+        </div>
+    </div>
+    <!-- For SH, ZM, NSM and CEO Role -->
+    <div *ngIf="(pendingFor == '' && 
+    (status == 'QUO_01' || status == 'QUO_03' || status == 'QUO_06' || status == 'QUO_09'))">
+        <div class="row" >
+            <div class="col-sm-8">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <label>Enter Remark</label>
+                        <textarea class="form-control" rows="5" [(ngModel)] = "remark"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3" *ngFor="let al of actionList">
+                        <button (click)="actionOnQuotation(al.text, al.action)" class="btn text-white" 
+                        [ngClass] = "{'btn-success' : al.text == 'Approve', 'btn-warning' : al.text == 'Recommend', 'btn-danger' : al.text == 'Reject' }" 
+                        >{{al.text}}</button>
+                    </div>
+                    <div class="col-sm-6" *ngIf="role == 'HINDWARE_NSM' || role == 'HINDWARE_CEO'">
+                        <button class="btn btn-warning text-white" (click)="downloadQuotationExcel()">Download Quotation Excel</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4" *ngIf="pipImagUrl1 !=''">
+                        <label style="display: block;">Pipeline Image 1</label>
+                        <img [src] = "pipImagUrl1" (click)="showBigImg(pipImagUrl1)"/>
+                    </div>
+                    <div class="col-sm-4" *ngIf="pipImagUrl2 !=''">
+                        <label style="display: block;">Pipeline Image 2</label>
+                        <img [src] = "pipImagUrl2" (click)="showBigImg(pipImagUrl2)"/>
+                    </div>
+                    <div class="col-sm-4" *ngIf="pipImagUrl3 !=''">
+                        <label style="display: block;">Pipeline Image 3</label>
+                        <img [src] = "pipImagUrl3" (click)="showBigImg(pipImagUrl3)"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table-bordered" width=100% *ngIf="auditList.length !=0">
+                            <thead>
+                                <tr>
+                                    <th>Role</th> <th>Remark</th> <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let at of auditList">
+                                    <td>{{at.approvedBy}}</td> <td>{{at.remark}}</td> <td>{{at.date}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+    <!-- For TM Role -->
+    <div *ngIf="pendingFor == '' && 
+    (status == 'QUO_02' || status == 'QUO_05' || status == 'QUO_08' || status == 'QUO_11')">
+        <div class="row">
+            <div class="col-sm-6 left-div">
+                <div class="row">
+                    <div class="col-sm-12 text-center po-details-row">Received PO Details</div>
+                </div>
+                <div class="row btn-row">
+                    <div class="col-sm-6 text-center">
+                        <button class="btn btn-block" [ngClass]="{'po-active' : isPartialPO == true}" (click)= "isPartialPO=true;isCompletePO=false;">Partial PO</button>
+                    </div>
+                    <div class="col-sm-6 text-center">
+                        <button class="btn btn-block" [ngClass]="{'po-active' : isCompletePO == true}" (click)= "isCompletePO=true;isPartialPO=false;">Complete PO</button>
+                    </div>
+                </div>
+                <div class="po-div" *ngIf="isPartialPO || isCompletePO">
+                    <div class="row" *ngIf="isHW">
+                        <div class="col-sm-12">
+                            Choose Brand to pitch in <br/>
+                            <span class="hsil-txt">Hindware</span>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <table class="table brand-table">
+                                <tr>
+                                    <th></th> <th>Old Value</th> <th>New Value(In Lacs)</th>
+                                </tr>
+                                <tr>
+                                    <td>HW Italian</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="hwItalianValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="hwItalianValueNew" OnlyNumber = "true" (keyup)="enterValue(hwItalianValue,hwItalianValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>HW Non Italian</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="hwNonItalianValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="hwNonItalianValueNew" OnlyNumber = "true" (keyup)="enterValue(hwNonItalianValue,hwNonItalianValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>HW Faucets</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="hwFaucetsValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="hwFaucetsValueNew" OnlyNumber = "true" (keyup)="enterValue(hwFaucetsValue,hwFaucetsValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Others</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="hwOtherValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="hwOtherValueNew" OnlyNumber = "true" (keyup)="enterValue(hwOtherValue,hwOtherValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th></th> <th>Value (In Lacs)</th> <th>No Of Pcs</th>
+                                </tr>
+                                <tr>
+                                    <td>PVC Cisterns(Old)</td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="pvcCisternsValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="pvcCisternsBath" [disabled]=true/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PVC Cisterns(New)</td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="pvcCisternsValueNew" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" name="pvcCisterns" 
+                                        [(ngModel)]="pvcCisternsBathNew" OnlyNumber = "true" 
+                                        (keyup)="enterValue(pvcCisternsBath,pvcCisternsBathNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Concealo(Old)</td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="concealoValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="concealoBath" [disabled]=true/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Concealo(New)</td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="concealoValueNew" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" name="concealo" 
+                                        [(ngModel)]="concealoBathNew" OnlyNumber = "true" 
+                                        (keyup)="enterValue(concealoBath,concealoBathNew,$event)"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="isBL">
+                        <div class="col-sm-12 div-hr" *ngIf="isHW"></div>
+
+                        <div class="col-sm-12">
+                            Choose Brand to pitch in <br/>
+                            <span class="hsil-txt">Benelave</span>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <table class="table brand-table">
+                                <tr>
+                                    <th></th> <th>Old Value</th> <th>New Value(In Lacs)</th>
+                                </tr>
+                                <tr>
+                                    <td>Benelave SW</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="blSWValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="blSWValueNew" OnlyNumber = "true" (keyup)="enterValue(blSWValue,blSWValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Benelave Faucets</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="blFaucetsValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="blFaucetsValueNew" OnlyNumber = "true" (keyup)="enterValue(blFaucetsValue,blFaucetsValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Others</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="blOtherValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="blOtherValueNew" OnlyNumber = "true" (keyup)="enterValue(blOtherValue,blOtherValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="isLS">
+                        <div class="col-sm-12 div-hr" *ngIf="isHW || isBL"></div>
+
+                        <div class="col-sm-12">
+                            Choose Brand to pitch in <br/>
+                            <span class="hsil-txt">Lifestyle</span>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <table class="table brand-table">
+                                <tr>
+                                    <th></th> <th>Old Value</th> <th>New Value(In Lacs)</th>
+                                </tr>
+                                <tr>
+                                    <td>Queo SW</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="queoSWValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="queoSWValueNew" OnlyNumber = "true" (keyup)="enterValue(queoSWValue,queoSWValueNew,$event);"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Queo Faucets</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="queoFaucetsValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="queoFaucetsValueNew" OnlyNumber = "true" (keyup)="enterValue(queoFaucetsValue,queoFaucetsValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Amore</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="amoreValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="amoreValueNew" OnlyNumber = "true" (keyup)="enterValue(amoreValue,amoreValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Others</td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="lsOtherValue" [disabled]=true/>
+                                    </td> 
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="lsOtherValueNew" OnlyNumber = "true" (keyup)="enterValue(lsOtherValue,lsOtherValueNew,$event)"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table brand-table">
+                                <tr>
+                                    <td></td> <td>Value (In Lacs)</td>
+                                </tr>
+                                <tr>
+                                    <td>Total</td>
+                                    <td>
+                                        <input type="text" class="form-control input-sm" [(ngModel)]="allTotal" [disabled]=true/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="row">
+                    <div class="col-sm-12 mr-t-b-10">
+                        <button class="btn btn-warning text-white" (click)="downloadQuotationExcel()">Download Quotation Excel</button>                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 mr-t-b-10">
+                        <label>PO Attachment</label>
+                        <input type="file" #poFile class="form-control" accept=".jpg,.png,.pdf" (change)="changeListener($event)"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12 mr-t-b-10">
+                        <label>Enter Remark</label>
+                        <textarea class="form-control" rows="5" style="resize: none;" [(ngModel)] = "remark"></textarea>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-sm-12 mr-t-b-10">
+                        <button (click)="actionOnQuotation(al.text, al.action)" class="btn text-white" 
+                            [ngClass] = "{'btn-warning' : al.text == 'Submit'}" 
+                            *ngFor="let al of actionList" style="margin-right:10px">{{al.text}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <!-- For commertial role -->
+    <div *ngIf="role == 'Commercial' ">
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Emp Id</th>
+                            <th>Brand</th>
+                            <th>Project Name</th>
+                            <th>PO Id</th>
+                            <th>PO Status</th>
+                            <th>PO Image</th>
+                            <th>ZQT_Number</th>
+                            <!-- <th>Pip Image</th> -->
+                            <th>View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let po of projectPoList">
+                            <td>{{po.empId}}</td>
+                            <td>{{po.brand}}</td>
+                            <td>{{po.projectName}}</td>
+                            <td>{{po.poId}}</td>
+                            <td>{{po.poStatus}}</td>
+                            <td>
+                                <img src="{{po.CON_IMAGE_URL_1}}" (click)="showBigImg(po.CON_IMAGE_URL_1)" style="width: 60px;height: 60px;"/>
+                            </td>
+                            <td>{{po.zqtNumber}}</td>
+                            <!-- <td>
+                                <a href="{{po.PIP_IMAGE_URL_1}}" target="blank" *ngIf="po.PIP_IMAGE_URL_1 !=''">Image 1</a>
+                                <a href="{{po.PIP_IMAGE_URL_2}}" target="blank" *ngIf="po.PIP_IMAGE_URL_2 !=''">Image 2</a>
+                                <a href="{{po.PIP_IMAGE_URL_3}}" target="blank" *ngIf="po.PIP_IMAGE_URL_3 !=''">Image 3</a>
+                            </td> -->
+                            <td>
+                                <a href="javascript:void(0)" (click)="viewPoDetails(po.poId, po.poStatus)">View</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>        
+</div>
+
+<div class="modal fade" id="poDetailsModal" role="dialog">
+    <div class="modal-dialog modal-xl">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">PO Detail - {{projectPoId}}</h6>
+        </div>
+        <div class="modal-body" style="height:445px">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="po-div1">
+                        <div class="row" *ngIf="isHW">
+                            <div class="col-sm-12">
+                                Choose Brand to pitch in <br/>
+                                <span class="hsil-txt">Hindware</span>
+                            </div>
+                        
+                            <div class="col-sm-12">
+                                <table class="table brand-table">
+                                    <tr>
+                                        <th></th> <th>Value</th>
+                                    </tr>
+                                    <tr>
+                                        <td>HW Italian</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="hwItalianValue" [disabled]=true/>
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td>HW Non Italian</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="hwNonItalianValue" [disabled]=true/>
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td>HW Faucets</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="hwFaucetsValue" [disabled]=true/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Others</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="hwOtherValue" [disabled]=true/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th></th> <th>Value (In Lacs)</th>
+                                    </tr>
+                                    <tr>
+                                        <td>PVC Cisterns</td>
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="pvcCisternsValue" [disabled]=true/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Concealo</td>
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="concealoValue" [disabled]=true/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="isBL">
+                            <div class="col-sm-12 div-hr" *ngIf="isHW"></div>
+                        
+                            <div class="col-sm-12">
+                                Choose Brand to pitch in <br/>
+                                <span class="hsil-txt">Benelave</span>
+                            </div>
+                        
+                            <div class="col-sm-12">
+                                <table class="table brand-table">
+                                    <tr>
+                                        <th></th> <th>Old Value</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Benelave SW</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="blSWValue" [disabled]=true/>
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Benelave Faucets</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="blFaucetsValue" [disabled]=true/>
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Others</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="blOtherValue" [disabled]=true/>
+                                        </td> 
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="isLS">
+                            <div class="col-sm-12 div-hr" *ngIf="isHW || isBL"></div>
+                        
+                            <div class="col-sm-12">
+                                Choose Brand to pitch in <br/>
+                                <span class="hsil-txt">Lifestyle</span>
+                            </div>
+                        
+                            <div class="col-sm-12">
+                                <table class="table brand-table">
+                                    <tr>
+                                        <th></th> <th>Old Value</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Queo SW</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="queoSWValue" [disabled]=true/>
+                                        </td> 
+                                    </tr>
+                                    <tr>
+                                        <td>Queo Faucets</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="queoFaucetsValue" [disabled]=true/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amore</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="amoreValue" [disabled]=true/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Others</td> 
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="lsOtherValue" [disabled]=true/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table brand-table">
+                                    <tr>
+                                        <td></td> <td>Value (In Lacs)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total</td>
+                                        <td>
+                                            <input type="text" class="form-control input-sm" [(ngModel)]="allTotal" [disabled]=true/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row" *ngIf="quotId != ''; else elseBlock ">
+                        <div class="col-sm-12 mr-t-b-10">
+                            <button class="btn btn-warning text-white" (click)="downloadQuotationExcel()">Download Quotation Excel</button>                        
+                        </div>
+                    </div>
+                    <ng-template #elseBlock>
+                        <div class="row">
+                            <div class="col-sm-12 mr-t-b-10">
+                                <h6 class="text-warning"><i>! Quotation not raise for this project</i></h6>
+                            </div>
+                        </div>
+                    </ng-template>
+
+                    <div class="row" *ngIf="pipImagUrl1 != '' || pipImagUrl2 != '' || pipImagUrl3 != '' ">
+                        <div class="col-sm-4" *ngIf="pipImagUrl1 != '' ">
+                            <label style="display: block;">Pipeline Image 1</label>
+                            <img [src]="pipImagUrl1" (click)="showBigImg(pipImagUrl1)"/>
+                        </div>
+                        <div class="col-sm-4" *ngIf="pipImagUrl2 != '' ">
+                            <label style="display: block;">Pipeline Image 2</label>
+                            <img [src]="pipImagUrl2"  (click)="showBigImg(pipImagUrl2)"/>
+                        </div>
+                        <div class="col-sm-4" *ngIf="pipImagUrl3 != '' ">
+                            <label style="display: block;">Pipeline Image 3</label>
+                            <img [src]="pipImagUrl3" (click)="showBigImg(pipImagUrl3)"/>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 mr-t-b-10">
+                            <label>Enter Remark</label>
+                            <textarea class="form-control" rows="3" style="resize: none;" [(ngModel)] = "remark" [disabled]="projectPoStatus != 'Pending' "></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="row" *ngIf="projectPoStatus == 'Pending'; else poElseBlock ">
+                        <div class="col-sm-12 mr-t-b-10">
+                            <!-- <button (click)="actionOnPO('Approved')" class="btn text-white btn-success" style="margin-right: 10px;" [disabled]="quotId == '' ">Approve</button> -->
+                            <button (click)="actionOnPO('Approved')" class="btn text-white btn-success" style="margin-right: 10px;">Approve</button>
+
+                            <button (click)="actionOnPO('Rejected')" class="btn text-white btn-danger">Reject</button>
+                        </div>
+                    </div>
+                    <ng-template #poElseBlock>
+                        <div class="row">
+                            <div class="col-sm-12 mr-t-b-10">
+                                <h3 [ngClass]="{'text-success': projectPoStatus == 'Approved', 'text-danger': projectPoStatus == 'Rejected'}">
+                                    <i>! {{projectPoId}} already {{projectPoStatus}}</i>
+                                </h3>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+            
+        </div>
+        <div class="modal-footer">
+          <button (click)="closeAnyModal('poDetailsModal')" type="button" class="btn btn-sm btn-warning text-white">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
